@@ -22,37 +22,45 @@ import java.io.IOException;
 public class FileExemle {
 	final static Logger logger = Logger.getLogger(FileExemle.class.getCanonicalName());
 
-	public static void main(final String[] args) {
+	public static void main(final String[] args) throws IOException {
 		logger.log(Level.INFO, "in FileExemple");
-		String fullPathString = System.getProperty("user.dir");
-		final Path fullPath = Paths.get(fullPathString);
-		final Path thisDirPath = fullPath.getFileName();
-		// String thisPathDir = System.getProperty(".");
-		logger.log(Level.INFO, fullPath + " hiii " + thisDirPath);
+//		String fullPathString = System.getProperty("user.dir");
+//		final Path fullPath = Paths.get(fullPathString);
+//		final Path thisDirPath = fullPath.getFileName();
+//		// String thisPathDir = System.getProperty(".");
+//		logger.log(Level.INFO, fullPath + " hiii " + thisDirPath);
 		
-		if(Files.isDirectory(fullPath)) {
-			logger.log(Level.INFO, fullPath + " isDirectory ");
-		}
+//		if(Files.isDirectory(fullPath)) {
+//			logger.log(Level.INFO, fullPath + " isDirectory ");
+//		}
+//		try {
+//			ls(fullPath);
+//		}catch (IOException ex) {
+//         // I/O error encounted during the iteration, the cause is an IOException
+//     }
+		
+		
 		try {
-			ls(fullPath);
-		}catch (IOException ex) {
-         // I/O error encounted during the iteration, the cause is an IOException
-     }
-		
-		trayCode("firstFile.txt");
-		trayCodeWrite("firstFile.txt");
-		if(args.length > 1) {
-			final String functinName = args[0];
-			final String functionFlags = args[1];
-			String functionData = "";
-			for (int i = 2; i < args.length; ++i) {
-				functionData += args[i]+" ";	
+			if(args.length > 1) {
+				final String functinName = args[0];
+				final String functionFlags = args[1];
+				String functionData = "";
+				for (int i = 2; i < args.length; ++i) {
+					functionData += args[i]+" ";	
+				}
+				diractFunction(functinName,functionFlags ,functionData);
 			}
-			diractFunction(functinName,functionFlags,functionData);
+		}
+		catch(IOException ex) {
+			
 		}
 	}
 
-	private static void ls(Path fullPath) throws IOException{
+	private static void ls(String fullPathHallo) throws IOException{
+		String fullPathString = System.getProperty("user.dir");
+		final Path fullPath = Paths.get(fullPathString);
+		final Path thisDirPath = fullPath.getFileName();
+		
 		logger.log(Level.INFO, "in ls"+fullPath);
 		List<Path> result = new ArrayList<>();
       try (DirectoryStream<Path> stream = Files.newDirectoryStream(fullPath, "*")) {
@@ -68,41 +76,7 @@ public class FileExemle {
       }      
 	}
 
-	private static void trayCodeWrite(String fileName) {
-		final Path path = Paths.get(fileName);
-		final Path pathEndsWith = Paths.get(".txt");
-		if (path.endsWith(pathEndsWith)) {
-			logger.log(Level.INFO, path.toString());
-		}
-		try (BufferedWriter writer = Files.newBufferedWriter(path, Charset.forName("UTF-8"))) {
-			writer.write("hi\n");
-			writer.newLine();
-			writer.write("hi");
-		} catch (IOException ex) {
-			ex.printStackTrace(); // handle an exception here
-		}
-
-	}
-
-	private static void trayCode(final String fileName) {
-		final Path path = Paths.get(fileName);
-		final Path pathEndsWith = Paths.get(".txt");
-		if (path.endsWith(pathEndsWith)) {
-			logger.log(Level.INFO, path.toString());
-		}
-		try (BufferedReader reader = Files.newBufferedReader(path, Charset.forName("UTF-8"))) {
-			String currentLine = null;
-			while ((currentLine = reader.readLine()) != null) {// while there is content on the current line
-				System.out.println(currentLine); // print the current line
-			}
-		} catch (IOException ex) {
-			ex.printStackTrace(); // handle an exception here
-		}
-		// logger.log(Level.INFO, path.toString());
-
-	}
-
-	private static void diractFunction(final String functinName, final String functionFlags, final String functionData) {
+	private static void diractFunction(final String functinName, final String functionFlags, final String functionData) throws IOException {
 		if (functinName.equals("write")) {
 			createAndWriteToFile(functionFlags, functionData);
 		}
@@ -110,13 +84,12 @@ public class FileExemle {
 			cat(functionFlags);
 		}
 		if (functinName.equals("dir")) {
+			
 			ls(functionFlags);
 		}
 	}
 
-	private static void ls(final String fileName) {
-
-	}
+	
 
 	private static void createAndWriteToFile(final String fileName, final String fileText) {
 		final Path path = Paths.get(fileName);
@@ -132,17 +105,22 @@ public class FileExemle {
 	}
 
 	private static void cat(String fileName) {
-		try {
-			File myObj = new File(fileName);
-			Scanner myReader = new Scanner(myObj);
-			while (myReader.hasNextLine()) {
-				String data = myReader.nextLine();
-				logger.log(Level.INFO, data);
+		String fullPathString = System.getProperty("user.dir");
+		final Path fullPath = Paths.get(fullPathString);
+		final Path thisDirPath = fullPath.getFileName();
+		
+		final Path path = Paths.get(fileName);
+		final Path pathEndsWith = Paths.get(".txt");
+		if (path.endsWith(pathEndsWith)) {
+			logger.log(Level.INFO, path.toString());
+		}
+		try (BufferedReader reader = Files.newBufferedReader(path, Charset.forName("UTF-8"))) {
+			String currentLine = null;
+			while ((currentLine = reader.readLine()) != null) {// while there is content on the current line
+				System.out.println(currentLine); // print the current line
 			}
-			myReader.close();
-		} catch (FileNotFoundException e) {
-			System.out.println("An error occurred.");
-			e.printStackTrace();
+		} catch (IOException ex) {
+			ex.printStackTrace(); // handle an exception here
 		}
 	}
 }
